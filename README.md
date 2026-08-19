@@ -1,29 +1,8 @@
 # PROJECT REPORT: GAMIFIED DEEP WORK & SELF-IMPROVEMENT TRACKER
 
-**NOIDA INSTITUTE OF ENGINEERING & TECHNOLOGY, GREATER NOIDA**  
-**(An Autonomous Institute)**
 
----
-### **[PLACEHOLDER: INSERT NIET LOGO HERE]**
----
-
-**Branch:** Computer Science & Engineering  
-**(MTech Integrated)**  
-**Semester:** 4th (2nd Year)
-
-**PROJECT ON**  
-**GAMIFIED DEEP WORK & SELF-IMPROVEMENT TRACKER**
-
-**Python Web Development with Django (BMICSE0411)**  
+**Python Web Development with Django **  
 **(Academic Session: 2025-26)**
-
-**Submitted By:**  
-**SHREYANSH KHEMKA**  
-**(2401330100554)**
-
-**Submitted To:**  
-**Ibrar Ahmad**  
-**(Assistant Professor, CSE)**
 
 ---
 
