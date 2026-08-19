@@ -75,31 +75,7 @@ class Stat(models.Model):
 
 ---
 
-## 4. SCREENSHOTS OF PROJECT
 
-### 4.1 Login / Boot Screen
-### **[PLACEHOLDER: INSERT SCREENSHOT OF YOUR LOGIN PAGE HERE]**
-*A terminal-style login interface with a deep charcoal background and gold-pixel typography. It sets the "Discipline System" tone immediately upon entry.*
-
-### 4.2 The Dashboard (Daily Execution Log)
-### **[PLACEHOLDER: INSERT SCREENSHOT OF YOUR DASHBOARD HERE]**
-*The core interface features a three-zone layout with parchment-style scrolls, live-updating checkboxes, and the 8-bit knight character panel.*
-
-### 4.3 Stats Page (Hexagon Radar)
-### **[PLACEHOLDER: INSERT SCREENSHOT OF YOUR STATS PAGE HERE]**
-*A dedicated screen featuring a glowing radar chart that mathematically plots the user's six core attributes based on their actual productivity.*
-
-### 4.4 History Grid (Activity Heat Map)
-### **[PLACEHOLDER: INSERT SCREENSHOT OF YOUR HISTORY PAGE HERE]**
-*A visual calendar grid where every day is represented by a tile. The color intensity increases as the user earns more points.*
-
----
-
-## 5. ADMIN BLOCK
-### **[PLACEHOLDER: INSERT SCREENSHOT OF DJANGO ADMIN PANEL HERE]**
-*The Django Admin panel is fully customized to allow supervisors to manage task definitions, point values, and monitor user registration and character stats.*
-
----
 
 ## 6. CONCLUSION
 
