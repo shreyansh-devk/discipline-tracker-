@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block auth_content %}
+<div class="full-page">
+    <div class="auth-box">
+        <h1 style="color: var(--xp-gold); font-size: 24px; text-align: center; margin-bottom: 5px;">INITIALIZE</h1>
+        <h2 style="color: #aaa; margin-bottom: 40px;">NEW CHARACTER</h2>
+        
+        <form method="post" style="width: 100%;">
+            {% csrf_token %}
+            {{ form.as_p }}
+            
+            <button type="submit" class="pixel-btn primary mt-4">CREATE CHARACTER</button>
+        </form>
+        
+        <div style="margin-top: 20px; font-family: var(--font-body); color: #aaa;">
+            HAVE CLEARANCE? <a href="{% url 'login' %}" style="color: var(--stat-focus);">LOGIN</a>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* basic styling for django form paragraphs in auth box */
+    .auth-box p { font-family: var(--font-body); color: #aaa; width: 100%; margin-bottom: 10px; }
+    .auth-box p input { width: 100%; background-color: #1a1a1a; border: 2px solid var(--border-pixel); color: white; padding: 10px; font-family: var(--font-body); font-size: 16px;}
+    .auth-box ul.errorlist { color: var(--stat-strength); font-family: var(--font-body); font-size: 14px; margin-bottom: 10px;}
+</style>
+{% endblock %}

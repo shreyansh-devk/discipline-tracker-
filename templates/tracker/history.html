@@ -1,0 +1,126 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1 style="color: var(--xp-gold); font-size: 20px; border-bottom: 2px solid var(--border-pixel); padding-bottom: 10px; margin-bottom: 20px;">
+    EXECUTION HISTORY
+</h1>
+
+<div class="history-grid">
+    {% for log in logs %}
+    <div class="history-tile" onclick="showDayDetail({{ log.id }})" style="background-color: rgba(230, 196, 79, {{ log.intensity }});">
+        <span class="tile-date">{{ log.date|date:"M d" }}</span>
+        <span class="tile-points">{{ log.total_points|floatformat:0 }}</span>
+    </div>
+    {% empty %}
+    <div style="grid-column: 1 / -1; text-align: center; color: #aaa; margin-top: 50px;">
+        NO DATA LOGGED IN THE SYSTEM YET.
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Modal Overlay -->
+<div id="day-modal" class="modal-overlay" onclick="closeModal()">
+    <div class="modal-content auth-box" onclick="event.stopPropagation()">
+        <h2 id="modal-date" style="color: var(--xp-gold);">DATE</h2>
+        <div id="modal-tasks" style="width: 100%; max-height: 400px; overflow-y: auto; margin-bottom: 20px;">
+            <!-- Tasks loaded here -->
+        </div>
+        <div id="modal-total" style="font-family: var(--font-number); font-size: 32px; color: var(--xp-gold);">
+            TOTAL: 0
+        </div>
+        <button class="pixel-btn primary mt-4" onclick="closeModal()">CLOSE</button>
+    </div>
+</div>
+
+<style>
+    .history-grid {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 15px;
+        margin-top: 20px;
+    }
+
+    .history-tile {
+        aspect-ratio: 1 / 1;
+        background-color: var(--bg-secondary);
+        border: 2px solid var(--border-pixel);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        transition: transform 0.1s, border-color 0.1s;
+        box-shadow: 2px 2px 0px rgba(0,0,0,0.5);
+    }
+
+    .history-tile:hover {
+        transform: scale(1.05);
+        border-color: var(--xp-gold);
+    }
+
+    .tile-date {
+        font-size: 10px;
+        color: #aaa;
+        font-family: var(--font-heading);
+    }
+
+    .tile-points {
+        font-family: var(--font-number);
+        font-size: 24px;
+        color: var(--color-parchment);
+    }
+
+    /* Modal Styles */
+    .modal-overlay {
+        position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background-color: rgba(0,0,0,0.8);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+    }
+
+    .modal-content {
+        width: 500px;
+        max-width: 90%;
+    }
+
+    .modal-task-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 10px;
+        border-bottom: 1px solid var(--border-pixel);
+        font-size: 18px;
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function showDayDetail(logId) {
+        fetch(`/api/day_detail/${logId}/`)
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('modal-date').innerText = data.date;
+                document.getElementById('modal-total').innerText = "TOTAL: " + data.total_points;
+                
+                const taskContainer = document.getElementById('modal-tasks');
+                taskContainer.innerHTML = '';
+                
+                data.tasks.forEach(task => {
+                    const item = document.createElement('div');
+                    item.className = 'modal-task-item';
+                    item.innerHTML = `<span>${task.name}</span><span style="color: var(--xp-gold);">+${task.points}</span>`;
+                    taskContainer.appendChild(item);
+                });
+                
+                document.getElementById('day-modal').style.display = 'flex';
+            });
+    }
+
+    function closeModal() {
+        document.getElementById('day-modal').style.display = 'none';
+    }
+</script>
+{% endblock %}

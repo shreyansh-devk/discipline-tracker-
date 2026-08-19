@@ -1,0 +1,175 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1 style="color: var(--xp-gold); font-size: 20px; border-bottom: 2px solid var(--border-pixel); padding-bottom: 10px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
+    <span>DAILY EXECUTION LOG</span>
+    <span id="day-clock" style="font-size: 14px; color: #aaa; font-family: var(--font-number);">RESET IN: 00:00:00</span>
+</h1>
+
+<script>
+    function updateClock() {
+        const now = new Date();
+        const midnight = new Date();
+        midnight.setHours(24, 0, 0, 0);
+        
+        const diff = midnight - now;
+        const hours = Math.floor(diff / (1000 * 60 * 60));
+        const mins = Math.floor((diff / (1000 * 60)) % 60);
+        const secs = Math.floor((diff / 1000) % 60);
+        
+        const pad = (n) => n.toString().padStart(2, '0');
+        document.getElementById('day-clock').innerText = `RESET IN: ${pad(hours)}:${pad(mins)}:${pad(secs)}`;
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+</script>
+
+<!-- DEEP WORK BLOCK -->
+<div class="task-block border-focus">
+    <h3>DEEP WORK</h3>
+    {% for task in grouped_tasks.DW %}
+    <div class="task-item" onclick="toggleTask({{ task.id }}, this)">
+        <div class="pixel-checkbox {% if task.id in completed_task_ids %}checked{% endif %}"></div>
+        <span>{{ task.name }}</span>
+        <span style="font-size: 12px; color: #aaa; margin-left: auto;">+{{ task.points }} pt</span>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- ACADEMIC BLOCK -->
+<div class="task-block border-knowledge">
+    <h3>ACADEMIC</h3>
+    {% for task in grouped_tasks.AC %}
+    <div class="task-item" onclick="toggleTask({{ task.id }}, this)">
+        <div class="pixel-checkbox {% if task.id in completed_task_ids %}checked{% endif %}"></div>
+        <span>{{ task.name }}</span>
+        <span style="font-size: 12px; color: #aaa; margin-left: auto;">+{{ task.points }} pt</span>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- BODY BLOCK -->
+<div class="task-block border-strength">
+    <h3>BODY</h3>
+    {% for task in grouped_tasks.BO %}
+    <div class="task-item" onclick="toggleTask({{ task.id }}, this)">
+        <div class="pixel-checkbox {% if task.id in completed_task_ids %}checked{% endif %}"></div>
+        <span>{{ task.name }}</span>
+        <span style="font-size: 12px; color: #aaa; margin-left: auto;">+{{ task.points }} pt</span>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- MIND BLOCK -->
+<div class="task-block border-wisdom">
+    <h3>MIND</h3>
+    {% for task in grouped_tasks.MI %}
+    <div class="task-item" onclick="toggleTask({{ task.id }}, this)">
+        <div class="pixel-checkbox {% if task.id in completed_task_ids %}checked{% endif %}"></div>
+        <span>{{ task.name }}</span>
+        <span style="font-size: 12px; color: #aaa; margin-left: auto;">+{{ task.points }} pt</span>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- REAL LIFE BLOCK -->
+<div class="task-block border-confidence">
+    <h3>REAL LIFE</h3>
+    {% for task in grouped_tasks.RL %}
+    <div class="task-item" onclick="toggleTask({{ task.id }}, this)">
+        <div class="pixel-checkbox {% if task.id in completed_task_ids %}checked{% endif %}"></div>
+        <span>{{ task.name }}</span>
+        <span style="font-size: 12px; color: #aaa; margin-left: auto;">+{{ task.points }} pt</span>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Initialize UI on load
+    document.addEventListener("DOMContentLoaded", () => {
+        document.getElementById('global-daily-points').innerText = "{{ daily_points|default:0 }}";
+        
+        {% if request.user.character %}
+        document.getElementById('global-xp-val').innerText = "{{ request.user.character.xp_within_level }}";
+        document.getElementById('global-xp-bar').style.width = "{{ request.user.character.xp_percentage }}%";
+        {% endif %}
+    });
+
+    function toggleTask(taskId, el) {
+        const checkbox = el.querySelector('.pixel-checkbox');
+        const isCurrentlyChecked = checkbox.classList.contains('checked');
+        const willBeChecked = !isCurrentlyChecked;
+        const pointValue = el.querySelector('span:last-child').innerText.split(' ')[0]; // gets "+5"
+        
+        // Optimistically update UI
+        if (willBeChecked) {
+            checkbox.classList.add('checked');
+            
+            // Create Floating Text
+            const floatingText = document.createElement('div');
+            floatingText.className = 'floating-text floating-text-gold';
+            floatingText.innerText = pointValue;
+            
+            // Position near the checkbox
+            const rect = el.getBoundingClientRect();
+            floatingText.style.left = (rect.left + 50) + 'px';
+            floatingText.style.top = rect.top + 'px';
+            document.body.appendChild(floatingText);
+            
+            // Cleanup floating text
+            setTimeout(() => {
+                floatingText.remove();
+            }, 1000);
+            
+            // Play sound optionally
+            // SOUND_CLICK.play(); 
+        } else {
+            checkbox.classList.remove('checked');
+        }
+
+        // Send to backend
+        fetch('/api/complete_task/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+            body: JSON.stringify({
+                task_id: taskId,
+                is_completed: willBeChecked
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                // Update Global UI elements
+                document.getElementById('global-daily-points').innerText = data.daily_points;
+                document.getElementById('global-xp-val').innerText = data.xp_within_level;
+                document.getElementById('global-xp-bar').style.width = data.xp_percentage + "%";
+                document.getElementById('global-level').innerText = "LVL " + data.level;
+                
+                // Could also trigger level up animation here if data.level increased
+            } else {
+                console.error("Failed to update task:", data.message);
+                // Revert UI if failed
+                if (isCurrentlyChecked) {
+                    checkbox.classList.add('checked');
+                } else {
+                    checkbox.classList.remove('checked');
+                }
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            // Revert UI if failed
+            if (isCurrentlyChecked) {
+                checkbox.classList.add('checked');
+            } else {
+                checkbox.classList.remove('checked');
+            }
+        });
+    }
+</script>
+{% endblock %}

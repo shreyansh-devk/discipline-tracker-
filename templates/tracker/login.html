@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block auth_content %}
+<div class="full-page">
+    <div class="auth-box">
+        <h1 style="color: var(--xp-gold); font-size: 24px; text-align: center; margin-bottom: 5px;">DISCIPLINE</h1>
+        <h2 style="color: #aaa; margin-bottom: 40px;">SYSTEM START</h2>
+        
+        <form method="post" style="width: 100%;">
+            {% csrf_token %}
+            <input type="text" name="username" class="pixel-input" placeholder="USERNAME" required autofocus>
+            <input type="password" name="password" class="pixel-input" placeholder="PASSWORD" required>
+            
+            <button type="submit" class="pixel-btn primary">LOGIN TO SYSTEM</button>
+        </form>
+        
+        <div style="margin-top: 20px; font-family: var(--font-body); color: #aaa;">
+            NEW USER? <a href="{% url 'register' %}" style="color: var(--stat-focus);">REGISTER</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

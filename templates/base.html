@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discipline System</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    {% if request.user.is_authenticated %}
+    <div class="layout-container">
+        <!-- Left Nav -->
+        <nav class="left-nav">
+            <h2 style="font-size: 10px; margin-bottom: 30px; text-align:center; padding: 0 10px; color: #aaa;">SYSTEM LOGGED IN</h2>
+            
+            <a href="{% url 'dashboard' %}" class="nav-item {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+                <svg class="nav-icon" viewBox="0 0 16 16"><rect x="2" y="2" width="5" height="5"/><rect x="9" y="2" width="5" height="5"/><rect x="2" y="9" width="5" height="5"/><rect x="9" y="9" width="5" height="5"/></svg>
+                DASHBOARD
+            </a>
+            <a href="{% url 'stats' %}" class="nav-item {% if request.resolver_match.url_name == 'stats' %}active{% endif %}">
+                <svg class="nav-icon" viewBox="0 0 16 16"><path d="M2 14h12v-2H2v2zm2-4h2V6H4v4zm4 0h2V2H8v8zm4 0h2v-2h-2v2z"/></svg>
+                STATS
+            </a>
+            <a href="{% url 'history' %}" class="nav-item {% if request.resolver_match.url_name == 'history' %}active{% endif %}">
+                <svg class="nav-icon" viewBox="0 0 16 16"><path d="M4 2v2H2v10h12V4h-2V2h-2v2H6V2H4zm8 4v6H4V6h8z"/></svg>
+                HISTORY
+            </a>
+            <a href="{% url 'achievements' %}" class="nav-item {% if request.resolver_match.url_name == 'achievements' %}active{% endif %}">
+                <svg class="nav-icon" viewBox="0 0 16 16"><path d="M4 2h8v2H4V2zm-2 2h2v4H2V4zm10 0h2v4h-2V4zm-8 4h8v2H4V8zm2 2h4v2H6v-2zm1 2h2v4H7v-4zm-2 4h6v2H5v-2z"/></svg>
+                AWARDS
+            </a>
+            <a href="{% url 'settings' %}" class="nav-item {% if request.resolver_match.url_name == 'settings' %}active{% endif %}">
+                <svg class="nav-icon" viewBox="0 0 16 16"><path d="M6 2h4v2h2v2h2v4h-2v2h-2v2H6v-2H4v-2H2V6h2V4h2V2zm1 3H5v2h2V5zm4 0H9v2h2V5zm0 4H9v2h2V9zM7 9H5v2h2V9zm2-2H7v2h2V7z"/></svg>
+                SETTINGS
+            </a>
+            
+            <div style="flex-grow: 1;"></div>
+            <a href="{% url 'logout' %}" class="nav-item" style="color:#C94F4F; font-size: 8px;">LOGOUT</a>
+        </nav>
+
+        <!-- Center Content -->
+        <main class="center-content">
+            {% block content %}
+            {% endblock %}
+        </main>
+
+        <!-- Right Panel (Character) -->
+        <aside class="right-panel">
+            <h2 id="global-level" style="font-size: 10px; margin-bottom: 20px; color: #aaa;">LVL {{ request.user.character.level|default:1 }}</h2>
+            
+            <div class="character-sprite-container">
+                <!-- 8-Bit RPG Knight/Adventurer Vector Sprite -->
+                <svg width="128" height="128" viewBox="0 0 32 32" style="image-rendering: pixelated; filter: drop-shadow(2px 2px 0px rgba(0,0,0,0.5));">
+                    <!-- Outline/Shadow -->
+                    <path fill="#1a1a1a" d="M12 2h8v2h4v4h2v8h-2v4h-2v10h-4v-4h-4v4h-4v-10H8v-4H6v-8h2V4h4V2z"/>
+                    <!-- Armor / Body Base -->
+                    <path fill="#9badb7" d="M10 14h12v6h-2v2h-8v-2h-2v-6z"/>
+                    <!-- Helmet / Head Base -->
+                    <path fill="#5b6ee1" d="M12 4h8v2h2v6h-2v2H12v-2h-2V6h2V4z"/>
+                    <!-- Skin (Face hole in helmet) -->
+                    <path fill="#f4c4a8" d="M14 8h6v4h-6z"/>
+                    <!-- Eyes -->
+                    <path fill="#202028" d="M15 9h1v1h-1zm3 0h1v1h-1z"/>
+                    <!-- Armor Accents (Gold) -->
+                    <path fill="#fbf236" d="M14 16h4v2h-4z M10 14h2v2h-2z M20 14h2v2h-2z"/>
+                    <!-- Belt -->
+                    <path fill="#6d4e2a" d="M12 20h8v2h-8z"/>
+                    <!-- Belt Buckle -->
+                    <path fill="#fbf236" d="M15 20h2v2h-2z"/>
+                    <!-- Legs / Pants -->
+                    <path fill="#4a4a54" d="M12 22h3v6h-3z M17 22h3v6h-3z"/>
+                    <!-- Boots -->
+                    <path fill="#6d4e2a" d="M10 28h4v2h-4z M18 28h4v2h-4z"/>
+                    <!-- Arms -->
+                    <path fill="#9badb7" d="M8 14h2v6H8z M22 14h2v6h-2z"/>
+                    <!-- Hands -->
+                    <path fill="#f4c4a8" d="M8 20h2v2H8z M22 20h2v2h-2z"/>
+                    <!-- Sword (held in right hand) -->
+                    <path fill="#1a1a1a" d="M6 10h2v12H6z"/>
+                    <path fill="#fbf236" d="M4 20h6v2H4z"/>
+                    <path fill="#9badb7" d="M6 12h2v8H6z"/>
+                    <path fill="#ffffff" d="M6 10h1v10H6z"/>
+                </svg>
+            </div>
+            
+            <div class="xp-bar-container">
+                <div class="xp-bar-fill" id="global-xp-bar" style="width: {{ request.user.character.xp_percentage|default:0 }}%;"></div>
+            </div>
+            <div class="xp-text">XP <span id="global-xp-val">{{ request.user.character.xp_within_level|default:0 }}</span> / 130</div>
+            
+            <div style="flex-grow: 1;"></div>
+            
+            <div class="daily-points-label">DAILY EFFORT</div>
+            <div class="daily-points" id="global-daily-points">0</div>
+        </aside>
+    </div>
+    {% else %}
+        {% block auth_content %}
+        {% endblock %}
+    {% endif %}
+    
+    <script>
+        // Global sound config
+        const SOUND_CLICK = new Audio('data:audio/mp3;base64,//O... placeholder'); // Placeholder
+    </script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

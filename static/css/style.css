@@ -1,0 +1,359 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap');
+
+:root {
+    /* CampusQuest Theme Integration */
+    --bg-page: #1a1a2e; /* color-night-sky */
+    --bg-secondary: #202028; /* color-slate */
+    --bg-panel: #363640; /* color-dungeon-wall */
+    
+    --border-pixel: #6d4e2a; /* color-wood */
+    --border-highlight: #fbf236; /* color-gold */
+    
+    --color-parchment: #e8dcc5;
+    --color-parchment-dark: #d4c4a8;
+    
+    --stat-strength: #ac3232; /* health-red */
+    --stat-focus: #5b6ee1; /* mana-blue */
+    --stat-knowledge: #9b59b6; /* epic */
+    --stat-wisdom: #6abe30; /* xp-green */
+    --stat-confidence: #fbf236; /* gold */
+    --stat-creativity: #ff6b35; /* rhythm orange */
+    
+    --xp-gold: #fbf236;
+    
+    --font-heading: 'Press Start 2P', 'Courier New', monospace;
+    --font-body: 'VT323', 'Courier New', monospace;
+    --font-number: 'VT323', 'Courier New', monospace;
+    
+    --shadow-pixel: 4px 4px 0px rgba(0, 0, 0, 0.5);
+    --anim-fast: 0.15s;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: var(--bg-page);
+    color: var(--color-parchment);
+    font-family: var(--font-body);
+    font-size: 20px; /* VT323 needs to be a bit larger to read well */
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+    text-transform: uppercase;
+    font-weight: bold;
+    margin-bottom: 15px;
+    letter-spacing: 1px;
+}
+
+.layout-container {
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+}
+
+/* Left Nav */
+.left-nav {
+    width: 18%;
+    background-color: var(--bg-secondary);
+    border-right: 4px solid var(--border-pixel);
+    display: flex;
+    flex-direction: column;
+    padding: 20px 0;
+    align-items: center;
+    box-shadow: var(--shadow-pixel);
+    z-index: 10;
+}
+
+.nav-item {
+    width: 85%;
+    padding: 15px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    color: var(--color-parchment);
+    text-decoration: none;
+    font-family: var(--font-heading);
+    font-size: 10px;
+    border: 4px solid transparent;
+    transition: transform var(--anim-fast);
+}
+
+.nav-item:hover {
+    border-color: var(--border-pixel);
+    transform: translateX(4px);
+    background-color: rgba(255,255,255,0.05);
+}
+
+.nav-item.active {
+    border-color: var(--border-highlight);
+    background-color: rgba(251, 242, 54, 0.1);
+    color: var(--border-highlight);
+}
+
+.nav-icon {
+    width: 16px;
+    height: 16px;
+    margin-right: 15px;
+    fill: currentColor;
+}
+
+/* Center Content */
+.center-content {
+    flex: 1;
+    background-color: var(--bg-panel);
+    padding: 40px;
+    overflow-y: auto;
+    position: relative;
+}
+
+/* Right Character Panel */
+.right-panel {
+    width: 22%;
+    background-color: var(--bg-secondary);
+    border-left: 4px solid var(--border-pixel);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 30px 10px;
+    box-shadow: -4px 0px 10px rgba(0,0,0,0.3);
+    z-index: 10;
+}
+
+.character-sprite-container {
+    width: 128px;
+    height: 128px;
+    margin-bottom: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* Adding a subtle glow effect */
+    filter: drop-shadow(0 0 10px rgba(251, 242, 54, 0.2));
+}
+
+.xp-bar-container {
+    width: 90%;
+    height: 24px;
+    background-color: #1a1a2e;
+    border: 4px solid var(--border-pixel);
+    margin-bottom: 8px;
+    position: relative;
+    box-shadow: var(--shadow-pixel);
+}
+
+.xp-bar-fill {
+    height: 100%;
+    background: linear-gradient(to right, #6abe30, #99e550); /* CampusQuest XP Green */
+    width: 0%;
+    transition: width 0.3s ease-out;
+}
+
+.xp-text {
+    font-family: var(--font-heading);
+    color: var(--xp-gold);
+    font-size: 10px;
+    text-align: center;
+    width: 100%;
+    margin-bottom: 30px;
+    text-shadow: 2px 2px 0px #000;
+}
+
+.daily-points {
+    font-family: var(--font-number);
+    font-size: 56px;
+    color: var(--xp-gold);
+    text-align: center;
+    text-shadow: 4px 4px 0px #000;
+}
+.daily-points-label {
+    font-family: var(--font-heading);
+    font-size: 10px;
+    color: var(--color-parchment-dark);
+    margin-bottom: 10px;
+    margin-top: auto;
+}
+
+/* Base Panel Styles */
+.full-page {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--bg-page);
+}
+
+.auth-box {
+    width: 450px;
+    background-color: var(--bg-panel);
+    border: 4px solid var(--border-pixel);
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: var(--shadow-pixel);
+}
+
+.pixel-input {
+    width: 100%;
+    background-color: #1a1a2e;
+    border: 4px solid var(--border-pixel);
+    color: var(--color-parchment);
+    font-family: var(--font-body);
+    font-size: 24px;
+    padding: 12px;
+    margin-bottom: 20px;
+    outline: none;
+    box-shadow: inset 2px 2px 0px rgba(0,0,0,0.5);
+}
+.pixel-input:focus {
+    border-color: var(--stat-focus);
+}
+
+.pixel-btn {
+    width: 100%;
+    background-color: #6d4e2a;
+    border: 4px solid #8b6914;
+    color: var(--color-parchment);
+    font-family: var(--font-heading);
+    font-size: 12px;
+    padding: 16px;
+    cursor: pointer;
+    margin-bottom: 15px;
+    transition: transform var(--anim-fast), box-shadow var(--anim-fast);
+    text-align: center;
+    text-decoration: none;
+    box-shadow: var(--shadow-pixel);
+}
+.pixel-btn:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0px rgba(0, 0, 0, 0.5);
+}
+.pixel-btn:active {
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0px rgba(0, 0, 0, 0.5);
+}
+
+.pixel-btn.primary {
+    background-color: var(--stat-focus);
+    border-color: #7b8ef1;
+}
+.pixel-btn.gold {
+    background-color: #d4a017;
+    border-color: var(--xp-gold);
+    color: #202028;
+}
+
+/* Dashboard Task Blocks - PARCHMENT SCROLL STYLE from CampusQuest */
+.task-block {
+    background: linear-gradient(to bottom, var(--color-parchment-dark) 0%, var(--color-parchment) 5%, var(--color-parchment) 95%, var(--color-parchment-dark) 100%);
+    border: 4px solid var(--border-pixel);
+    border-radius: 4px;
+    padding: 25px 20px;
+    margin-bottom: 30px;
+    box-shadow: var(--shadow-pixel);
+    position: relative;
+    color: #4a3519; /* dark wood text for parchment */
+}
+.task-block::before,
+.task-block::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 95%;
+    height: 8px;
+    background-color: var(--border-pixel);
+    border-radius: 4px;
+}
+.task-block::before { top: -8px; }
+.task-block::after { bottom: -8px; }
+
+.task-block h3 {
+    font-size: 14px;
+    margin-bottom: 20px;
+    color: #4a3519; /* Default dark text */
+    text-shadow: 1px 1px 0px rgba(255,255,255,0.5);
+}
+
+.task-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 4px;
+    transition: background-color var(--anim-fast);
+}
+.task-item:hover {
+    background-color: rgba(0,0,0,0.05);
+}
+
+.pixel-checkbox {
+    width: 24px;
+    height: 24px;
+    border: 4px solid var(--border-pixel);
+    margin-right: 15px;
+    display: inline-block;
+    background-color: #d4c4a8; /* darkened parchment for empty box */
+    position: relative;
+    box-shadow: inset 2px 2px 0px rgba(0,0,0,0.2);
+}
+
+.pixel-checkbox.checked::after {
+    content: '';
+    position: absolute;
+    top: 2px; left: 2px; right: 2px; bottom: 2px;
+    background-color: inherit; /* overridden by specific borders */
+    box-shadow: inset 0px 0px 4px rgba(0,0,0,0.5);
+}
+
+/* Category Accents for Checkboxes */
+.border-focus h3 { color: var(--stat-focus); }
+.border-focus .pixel-checkbox.checked::after { background-color: var(--stat-focus); }
+
+.border-knowledge h3 { color: var(--stat-knowledge); }
+.border-knowledge .pixel-checkbox.checked::after { background-color: var(--stat-knowledge); }
+
+.border-strength h3 { color: var(--stat-strength); }
+.border-strength .pixel-checkbox.checked::after { background-color: var(--stat-strength); }
+
+.border-wisdom h3 { color: var(--stat-wisdom); }
+.border-wisdom .pixel-checkbox.checked::after { background-color: var(--stat-wisdom); }
+
+.border-confidence h3 { color: var(--stat-confidence); }
+.border-confidence .pixel-checkbox.checked::after { background-color: var(--stat-confidence); }
+
+.border-creativity h3 { color: var(--stat-creativity); }
+.border-creativity .pixel-checkbox.checked::after { background-color: var(--stat-creativity); }
+
+/* Floating Text Animation */
+@keyframes float-up {
+    0% { opacity: 1; transform: translateY(0) scale(1); }
+    100% { opacity: 0; transform: translateY(-50px) scale(1.5); }
+}
+
+.floating-text {
+    position: absolute;
+    font-family: var(--font-heading);
+    font-size: 16px;
+    pointer-events: none;
+    animation: float-up 1s ease-out forwards;
+    text-shadow: 2px 2px 0px rgba(0, 0, 0, 1);
+    z-index: 50;
+}
+.floating-text-gold { color: var(--xp-gold); }
+
+/* Utilities */
+.text-center { text-align: center; }
+.mt-4 { margin-top: 20px; }
+.mb-4 { margin-bottom: 20px; }

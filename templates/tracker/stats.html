@@ -1,0 +1,146 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container" style="max-width: 800px; margin: 0 auto; padding-top: 20px;">
+    <h1 style="color: var(--xp-gold); font-size: 24px; border-bottom: 4px solid var(--border-pixel); padding-bottom: 15px; margin-bottom: 40px; text-shadow: 2px 2px 0px rgba(0,0,0,0.5);">
+        CHARACTER STATS
+    </h1>
+
+    <div style="display: flex; justify-content: center; align-items: center; background-color: var(--bg-secondary); border: 4px solid var(--border-pixel); box-shadow: var(--shadow-pixel); padding: 40px; position: relative;">
+        
+        <!-- Canvas for Hexagon -->
+        <canvas id="statsHexagon" width="400" height="400" style="filter: drop-shadow(0 0 10px rgba(91, 110, 225, 0.3));"></canvas>
+
+        <div style="position: absolute; bottom: 20px; text-align: center; width: 100%; color: var(--color-parchment-dark); font-size: 14px;">
+            TOTAL XP: {{ request.user.character.total_xp }}
+        </div>
+    </div>
+    
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 30px;">
+        <div class="task-block" style="margin-bottom: 0;">
+            <h3 style="color: var(--stat-strength);">STRENGTH</h3>
+            <div style="font-size: 24px;">LVL {{ request.user.stats.strength|default:1 }}</div>
+        </div>
+        <div class="task-block" style="margin-bottom: 0;">
+            <h3 style="color: var(--stat-focus);">FOCUS</h3>
+            <div style="font-size: 24px;">LVL {{ request.user.stats.focus|default:1 }}</div>
+        </div>
+        <div class="task-block" style="margin-bottom: 0;">
+            <h3 style="color: var(--stat-knowledge);">KNOWLEDGE</h3>
+            <div style="font-size: 24px;">LVL {{ request.user.stats.knowledge|default:1 }}</div>
+        </div>
+        <div class="task-block" style="margin-bottom: 0;">
+            <h3 style="color: var(--stat-wisdom);">WISDOM</h3>
+            <div style="font-size: 24px;">LVL {{ request.user.stats.wisdom|default:1 }}</div>
+        </div>
+        <div class="task-block" style="margin-bottom: 0;">
+            <h3 style="color: var(--stat-confidence);">CONFIDENCE</h3>
+            <div style="font-size: 24px;">LVL {{ request.user.stats.confidence|default:1 }}</div>
+        </div>
+        <div class="task-block" style="margin-bottom: 0;">
+            <h3 style="color: var(--stat-creativity);">CREATIVITY</h3>
+            <div style="font-size: 24px;">LVL {{ request.user.stats.creativity|default:1 }}</div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const canvas = document.getElementById('statsHexagon');
+    const ctx = canvas.getContext('2d');
+    
+    const size = 400;
+    const center = size / 2;
+    const radius = size * 0.35;
+    
+    // Server-side stats (using dummy maxStat of 20 for scaling)
+    const maxStat = 20;
+    const rawStats = {
+        STR: {{ request.user.stats.strength|default:1 }},
+        INT: {{ request.user.stats.focus|default:1 }},
+        WIS: {{ request.user.stats.wisdom|default:1 }},
+        CHA: {{ request.user.stats.confidence|default:1 }},
+        VIT: {{ request.user.stats.knowledge|default:1 }}, // mapped knowledge to vit
+        AGI: {{ request.user.stats.creativity|default:1 }}  // mapped creativity to agi
+    };
+    
+    const normalizedStats = {
+        STR: Math.min(rawStats.STR / maxStat, 1),
+        INT: Math.min(rawStats.INT / maxStat, 1),
+        WIS: Math.min(rawStats.WIS / maxStat, 1),
+        CHA: Math.min(rawStats.CHA / maxStat, 1),
+        VIT: Math.min(rawStats.VIT / maxStat, 1),
+        AGI: Math.min(rawStats.AGI / maxStat, 1)
+    };
+    
+    const statOrder = ['STR', 'INT', 'WIS', 'CHA', 'VIT', 'AGI'];
+    
+    function getPoint(index, value = 1) {
+        const angle = (Math.PI / 3) * index - Math.PI / 2;
+        const r = radius * value;
+        return {
+            x: center + r * Math.cos(angle),
+            y: center + r * Math.sin(angle)
+        };
+    }
+    
+    // Draw Grid
+    const gridLevels = [0.25, 0.5, 0.75, 1];
+    ctx.lineWidth = 1;
+    gridLevels.forEach(level => {
+        ctx.beginPath();
+        statOrder.forEach((_, i) => {
+            const p = getPoint(i, level);
+            if (i === 0) ctx.moveTo(p.x, p.y);
+            else ctx.lineTo(p.x, p.y);
+        });
+        ctx.closePath();
+        ctx.strokeStyle = `rgba(232, 220, 197, ${0.1 + level * 0.2})`; // Parchment color with alpha
+        ctx.stroke();
+    });
+    
+    // Draw Axes
+    ctx.beginPath();
+    statOrder.forEach((_, i) => {
+        const outer = getPoint(i, 1);
+        ctx.moveTo(center, center);
+        ctx.lineTo(outer.x, outer.y);
+    });
+    ctx.strokeStyle = 'rgba(232, 220, 197, 0.2)';
+    ctx.stroke();
+    
+    // Draw Stat Polygon
+    ctx.beginPath();
+    statOrder.forEach((stat, i) => {
+        // Boost stat a bit to make it visible even at lvl 1
+        const val = Math.max(normalizedStats[stat], 0.1); 
+        const p = getPoint(i, val);
+        if (i === 0) ctx.moveTo(p.x, p.y);
+        else ctx.lineTo(p.x, p.y);
+    });
+    ctx.closePath();
+    
+    // Gradient fill
+    const gradient = ctx.createLinearGradient(0, 0, size, size);
+    gradient.addColorStop(0, 'rgba(91, 110, 225, 0.8)'); // mana-blue
+    gradient.addColorStop(1, 'rgba(106, 190, 48, 0.6)'); // xp-green
+    ctx.fillStyle = gradient;
+    ctx.fill();
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = '#fbf236'; // gold border
+    ctx.stroke();
+    
+    // Draw Labels
+    ctx.font = '16px "Press Start 2P"';
+    ctx.fillStyle = '#e8dcc5'; // parchment
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    
+    statOrder.forEach((stat, i) => {
+        const p = getPoint(i, 1.25);
+        ctx.fillText(stat, p.x, p.y);
+    });
+});
+</script>
+{% endblock %}
